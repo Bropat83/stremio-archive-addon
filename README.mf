@@ -1,0 +1,7 @@
+# 📺 Stremio Archive.org Addon
+
+Addon para Stremio que permite explorar y reproducir películas y series alojadas en Archive.org.
+
+## 🚀 Instalación rápida en Stremio
+1. Abre Stremio → Add-ons → My Add-ons → Add via URL.
+2. Introduce la URL de tu despliegue en Render:
