@@ -1,0 +1,17 @@
+{
+  "name": "stremio-archive-addon",
+  "version": "1.0.0",
+  "description": "Addon para Stremio que permite ver películas y series desde Archive.org",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "stremio-addon-sdk": "^1.3.1"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "license": "MIT"
+}
