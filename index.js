@@ -3,32 +3,30 @@ const fetch = require("node-fetch");
 
 const manifest = {
   id: "org.archive",
-  version: "1.0.2",
+  version: "1.0.3",
   name: "Archive.org Addon",
-  description: "Películas y series gratis desde Archive.org (con filtro por idioma)",
+  description: "Películas y series gratis desde Archive.org (Español y Catalán)",
   resources: ["catalog", "meta", "stream"],
   types: ["movie", "series"],
   idPrefixes: ["archive"],
   catalogs: [
-    {
-      type: "movie",
-      id: "archive-movies-es",
-      name: "Archive.org Películas (Español)"
-    },
-    {
-      type: "series",
-      id: "archive-series-es",
-      name: "Archive.org Series (Español)"
-    }
+    { type: "movie", id: "archive-movies-es", name: "Archive.org Películas (Español)" },
+    { type: "series", id: "archive-series-es", name: "Archive.org Series (Español)" },
+    { type: "movie", id: "archive-movies-ca", name: "Archive.org Películas (Catalán)" },
+    { type: "series", id: "archive-series-ca", name: "Archive.org Series (Catalán)" }
   ]
 };
 
 const builder = new addonBuilder(manifest);
 
-// Catálogo filtrado por idioma
-builder.defineCatalogHandler(async ({ type }) => {
+// Catálogo por idioma
+builder.defineCatalogHandler(async ({ type, id }) => {
+  let lang = "";
+  if (id.includes("-es")) lang = "spanish";
+  if (id.includes("-ca")) lang = "catalan";
+
   const mediaType = type === "series" ? "tv" : "movies";
-  const url = `https://archive.org/advancedsearch.php?q=mediatype:${mediaType}+language:spanish&fl[]=identifier&fl[]=title&rows=20&page=1&output=json`;
+  const url = `https://archive.org/advancedsearch.php?q=mediatype:${mediaType}+language:${lang}&fl[]=identifier&fl[]=title&rows=20&page=1&output=json`;
   const res = await fetch(url);
   const data = await res.json();
 
@@ -42,7 +40,7 @@ builder.defineCatalogHandler(async ({ type }) => {
   return { metas };
 });
 
-// Metadata (pelis y series)
+// Metadata
 builder.defineMetaHandler(async ({ id }) => {
   const identifier = id.split(":")[1];
   const url = `https://archive.org/metadata/${identifier}`;
@@ -59,7 +57,7 @@ builder.defineMetaHandler(async ({ id }) => {
     description: data.metadata.description || "Sin descripción"
   };
 
-  // Si es serie, añadimos capítulos
+  // Si es serie añadimos episodios
   if (isSeries && data.files) {
     meta.videos = data.files
       .filter(f => f.format && f.format.includes("MPEG4"))
