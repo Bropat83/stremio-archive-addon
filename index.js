@@ -71,6 +71,8 @@ builder.defineStreamHandler(async ({ id }) => {
   return { streams };
 });
 
+const { serveHTTP } = require("stremio-addon-sdk");
+
 const port = process.env.PORT || 7000;
-builder.getInterface().serveHTTP(port);
+serveHTTP(builder.getInterface(), { port });
 console.log(`Addon Archive.org corriendo en http://localhost:${port}`);
